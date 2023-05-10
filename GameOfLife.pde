@@ -1,4 +1,4 @@
-final int CELL_SIZE = 100;
+final int CELL_SIZE = 20;
 
 
 int probabilityOfSTartingAlive = 15;
@@ -8,18 +8,20 @@ int[][] grid;
 int[][] buffer;
 
 // Variables for colors
-color alive = color(0, 200, 0);
-color dead = color(0);
+color alive = color(55, 55, 55);
+color bg = color(255);
+color line = color(180);
 
 // Variables for timer
-int interval = 1000;
+int interval = 300;
 int lastRecordedTime = 0;
 boolean isPaused = true;
 
 
 void setup(){
  size(500, 500);
- background(0);
+ colorMode(RGB);
+ background(bg);
  grid = new int[width/CELL_SIZE][height/CELL_SIZE];
  buffer = new int[width/CELL_SIZE][height/CELL_SIZE];
  setupGridRandom();
@@ -29,6 +31,7 @@ void setup(){
 }
 
 void draw(){
+  
   if (millis()-lastRecordedTime>interval) {
     if (!isPaused) {
       iteration();
@@ -51,20 +54,28 @@ void draw(){
   if(isPaused && !mousePressed){
     for(int i=0; i<width/CELL_SIZE; i++){
      for(int j=0; j<height/CELL_SIZE; j++){
-       buffer[i][j] = grid[i][j];
+       copyArray(grid,buffer);
      }
     }
   }
 }
 
+void copyArray(int[][] src, int[][] dest){
+ for(int i=0; i<width/CELL_SIZE; i++){
+   for(int j=0; j<height/CELL_SIZE; j++){
+     dest[i][j] = src[i][j];
+   }
+ } 
+}
+
 void drawNextState(){
-   background(0);
+   background(bg);
    drawGrid(); 
    drawCells();
 }
 
 void drawGrid(){
-  stroke(42);
+  stroke(line);
   for(int x=0; x < width; x+= CELL_SIZE){
     line(x, 0, x, height);
    for(int y=0; y < height; y+= CELL_SIZE){
@@ -97,6 +108,15 @@ void setupGridRandom(){
      
    }  
  } 
+}
+
+void emptyGrid(){
+  for(int i=0; i<width/CELL_SIZE; i++){
+   for(int j=0; j<height/CELL_SIZE; j++){
+     grid[i][j] = 0;
+     buffer[i][j] = 0;
+   }
+ }
 }
 
 int visitNeighbours(int x, int y){
@@ -137,11 +157,7 @@ void iteration(){
  } // end x loop
  
  // replace the arrays
- for(int i=0; i<width/CELL_SIZE; i++){
-   for(int j=0; j<height/CELL_SIZE; j++){
-     grid[i][j] = buffer[i][j];
-   }
- }
+ copyArray(buffer, grid);
 }
 
 void keyPressed(){
@@ -152,4 +168,9 @@ void keyPressed(){
    setupGridRandom();
    drawNextState();
  }
+ if(key == 'c' || key == 'C'){
+   emptyGrid();
+   drawNextState();
+ }
+ 
 }
