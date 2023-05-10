@@ -1,9 +1,21 @@
 final int CELL_SIZE = 100;
+
+
 int probabilityOfSTartingAlive = 15;
+
+// Varaibles for grid state
 int[][] grid;
 int[][] buffer;
+
+// Variables for colors
 color alive = color(0, 200, 0);
 color dead = color(0);
+
+// Variables for timer
+int interval = 1000;
+int lastRecordedTime = 0;
+boolean isPaused = true;
+
 
 void setup(){
  size(500, 500);
@@ -17,11 +29,14 @@ void setup(){
 }
 
 void draw(){
-  if(mousePressed){
-    iteration();
-    background(0);
-    drawGrid();
-    drawCells();
+  if (millis()-lastRecordedTime>interval) {
+    if (!isPaused) {
+      iteration();
+      background(0);
+      drawGrid();
+      drawCells();
+      lastRecordedTime = millis();
+    }
   }
 }
 
