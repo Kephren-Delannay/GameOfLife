@@ -22,10 +22,7 @@ void setup(){
  background(0);
  grid = new int[width/CELL_SIZE][height/CELL_SIZE];
  buffer = new int[width/CELL_SIZE][height/CELL_SIZE];
- //setupGridRandom();
- grid[2][0] = 1;
- grid[2][1] = 1;
- grid[2][2] = 1;
+ setupGridRandom();
  drawGrid();
  drawCells();
  
@@ -38,8 +35,26 @@ void draw(){
       drawNextState();
       lastRecordedTime = millis();
     }
-  
   }  
+  
+  if(isPaused && mousePressed){
+   int xCellOver = int(map(mouseX, 0, width, 0, width/CELL_SIZE));
+   xCellOver = constrain(xCellOver, 0, width/CELL_SIZE - 1);
+   int yCellOver = int(map(mouseY, 0, height, 0, height/CELL_SIZE));
+   yCellOver = constrain(yCellOver, 0, height/CELL_SIZE - 1);
+   if(buffer[xCellOver][yCellOver] == 0)
+     grid[xCellOver][yCellOver] = 1;
+   else
+     grid[xCellOver][yCellOver] = 0;
+   drawNextState();
+  }
+  if(isPaused && !mousePressed){
+    for(int i=0; i<width/CELL_SIZE; i++){
+     for(int j=0; j<height/CELL_SIZE; j++){
+       buffer[i][j] = grid[i][j];
+     }
+    }
+  }
 }
 
 void drawNextState(){
