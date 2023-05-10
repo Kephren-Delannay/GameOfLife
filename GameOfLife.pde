@@ -22,37 +22,45 @@ void setup(){
  background(0);
  grid = new int[width/CELL_SIZE][height/CELL_SIZE];
  buffer = new int[width/CELL_SIZE][height/CELL_SIZE];
- setupGridRandom();
+ //setupGridRandom();
+ grid[2][0] = 1;
+ grid[2][1] = 1;
+ grid[2][2] = 1;
  drawGrid();
  drawCells();
- println(visitNeighbours(0,0));
+ 
 }
 
 void draw(){
   if (millis()-lastRecordedTime>interval) {
     if (!isPaused) {
       iteration();
-      background(0);
-      drawGrid();
-      drawCells();
+      drawNextState();
       lastRecordedTime = millis();
     }
-  }
+  
+  }  
+}
+
+void drawNextState(){
+   background(0);
+   drawGrid(); 
+   drawCells();
 }
 
 void drawGrid(){
   stroke(42);
-  for(int x=0; x < height; x+= CELL_SIZE){
+  for(int x=0; x < width; x+= CELL_SIZE){
     line(x, 0, x, height);
-   for(int y=0; y < width; y+= CELL_SIZE){
+   for(int y=0; y < height; y+= CELL_SIZE){
      line(0, y, width, y);
    }
   }
 }
 
 void drawCells(){
-  for(int x=0; x < height / CELL_SIZE; x++){
-   for(int y=0; y < width / CELL_SIZE; y++){
+  for(int x=0; x < width / CELL_SIZE; x++){
+   for(int y=0; y < height / CELL_SIZE; y++){
      if(grid[x][y] == 1){
        fill(alive);
        rect(x*CELL_SIZE, y*CELL_SIZE, CELL_SIZE, CELL_SIZE);
@@ -89,21 +97,19 @@ int visitNeighbours(int x, int y){
 }
 
 void iteration(){
-  for(int x=0; x < height / CELL_SIZE; x++){
-   for(int y=0; y < width / CELL_SIZE; y++){
+  for(int x=0; x < width / CELL_SIZE; x++){
+   for(int y=0; y < height / CELL_SIZE; y++){
      // visit each cell
      int neighbours = visitNeighbours(x,y);
      if(grid[x][y] == 1){
-       // alive
        if(neighbours < 2 || neighbours > 3){
           // dies
           buffer[x][y] = 0;
-       }else{
+       }else{ 
           // continues living
           buffer[x][y] = 1;
        }
      }else {
-       // dead
        if(neighbours == 3){
          // born
          buffer[x][y] = 1;
@@ -116,5 +122,19 @@ void iteration(){
  } // end x loop
  
  // replace the arrays
- arrayCopy(buffer, grid);
+ for(int i=0; i<width/CELL_SIZE; i++){
+   for(int j=0; j<height/CELL_SIZE; j++){
+     grid[i][j] = buffer[i][j];
+   }
+ }
+}
+
+void keyPressed(){
+ if(key == ' '){
+   isPaused = !isPaused;
+ }
+ if(key == 'r' || key == 'R'){
+   setupGridRandom();
+   drawNextState();
+ }
 }
