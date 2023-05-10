@@ -5,7 +5,7 @@ Conway’s Game of life is a form of cellular automaton which means the system e
  
 ## How to use
 The sketch starts on pause
-You can choose the state of each cell with the mouse
-Press **spacebar** to play or pause
-Press **c** to clear
-Press **r** to randomize setup
+- You can choose the state of each cell with the mouse
+- Press **spacebar** to play or pause
+- Press **c** to clear
+- Press **r** to randomize setup
